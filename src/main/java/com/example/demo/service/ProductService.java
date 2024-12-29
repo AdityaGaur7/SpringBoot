@@ -4,47 +4,49 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Product;
+import com.example.demo.repository.ProductRepo;
 
 @Service
 public class ProductService {
 
-	List<Product> products  = new ArrayList<>(Arrays.asList(
-			new Product(1, "Laptop", 1000),
-			new Product(2, "Mobile", 500),
-			new Product(3, "Tablet", 300)
-			));
+	// List<Product> products  = new ArrayList<>(Arrays.asList(
+	// 		new Product(1, "Laptop", 1000),
+	// 		new Product(2, "Mobile", 500),
+	// 		new Product(3, "Tablet", 300)
+	// 		));
+             @Autowired
+          private ProductRepo repo;
 
             public List<Product> getProducts() {
-                return products;
+                return repo.findAll();
             }
 
             public Product getProductById(int id) {
-                return products.stream().filter(p -> p.getProdId() == id).findFirst().get();
-            }
+                return repo.findById(id).orElse(null);
+             }
 
             public void addProduct(Product product) {
-                products.add(product);
+                repo.save(product);
             }
             public void updateProduct( int id,Product product) {
-                for(int i = 0; i < products.size(); i++) {
-                    Product p = products.get(i);
-                    if(p.getProdId() == id) {
-                        products.set(i, product);
-                        return;
-                    }
-                }
-                throw new RuntimeException("Product not found");
-               
+                Product p = repo.findById(id).orElse(null);
+                if (p != null) {
+                    p.setProdName(product.getProdName());
+                    p.setPrice(product.getPrice());
+                    repo.save(p);
+                } else
+                System.out.println("Product not found");   
 
 
             }
 
             public void deleteProduct(int id) {
-                products.removeIf(p -> p.getProdId() == id);
-                
+                repo.deleteById(id);
+
             }
 
     
