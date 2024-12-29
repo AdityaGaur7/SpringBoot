@@ -28,5 +28,24 @@ public class ProductService {
             public void addProduct(Product product) {
                 products.add(product);
             }
+            public void updateProduct( int id,Product product) {
+                for(int i = 0; i < products.size(); i++) {
+                    Product p = products.get(i);
+                    if(p.getProdId() == id) {
+                        products.set(i, product);
+                        return;
+                    }
+                }
+                throw new RuntimeException("Product not found");
+               
+
+
+            }
+
+            public void deleteProduct(int id) {
+                products.removeIf(p -> p.getProdId() == id);
+                
+            }
+
     
 }
