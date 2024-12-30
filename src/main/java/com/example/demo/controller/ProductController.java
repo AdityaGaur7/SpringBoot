@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.model.Product;
 import com.example.demo.service.ProductService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api")
 public class ProductController {
     @Autowired
 	ProductService productService;
@@ -33,6 +34,13 @@ public class ProductController {
 	public ResponseEntity<List<Product>> getProducts() {
 		return new ResponseEntity<>(productService.getProducts(),HttpStatus.OK);
 	}
+	@GetMapping("/")
+	public String greet(HttpServletRequest request) {
+		return "Hello world"+ request.getSession().getId();
+	}
+
+
+	
 
 	@GetMapping("/products/{id}")
 	public ResponseEntity<Product> getProductById(@PathVariable int id) {
@@ -45,9 +53,12 @@ public class ProductController {
 	}
 
 	@PostMapping("/products")
-	public void addProduct(@RequestBody Product product) {
-		productService.addProduct(product);
-	}
+public ResponseEntity<String> addProduct(@RequestBody Product product) {
+    productService.addProduct(product);
+    return new ResponseEntity<>("Product added successfully", HttpStatus.CREATED);
+}
+
+	
     @PutMapping("/products/{id}")
 	public void updateProduct(@RequestBody Product product, @PathVariable int id) {
 		productService.updateProduct(id, product);

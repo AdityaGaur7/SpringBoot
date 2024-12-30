@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Product;
@@ -20,6 +22,10 @@ public class ProductService {
 	// 		));
              @Autowired
           private ProductRepo repo;
+           
+          
+          private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
 
             public List<Product> getProducts() {
                 return repo.findAll();
@@ -29,8 +35,14 @@ public class ProductService {
                 return repo.findById(id).orElse(null);
              }
 
-            public void addProduct(Product product) {
+            public Product addProduct(Product product) {
+                // product.setPassword(encoder.encode(product.getPassword()));
+
                 repo.save(product);
+                
+                    return product;
+                
+  
             }
             public void updateProduct( int id,Product product) {
                 Product p = repo.findById(id).orElse(null);
@@ -48,7 +60,7 @@ public class ProductService {
                 repo.deleteById(id);
 
             }
-
+       
             public List<Product> searchProducts(String keyword) {
                 return repo.searchProducts(keyword);
             }
